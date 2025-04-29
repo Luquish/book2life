@@ -42,7 +42,6 @@ interface BookPage {
   image_path: string;
   image_type: 'url' | 'base64';
   text: string;
-  textOverlay: boolean;
 }
 
 // Paso 1 - Segmentar historia
@@ -173,16 +172,12 @@ function buildPrompts(scenes: Scene[], styleKey: string, imageOptions: any = {})
       ? " Maintain the same characters, color palette and environment consistency as the previous page."
       : "";
 
-    const textLayoutClause = imageOptions.textOverlay
-      ? " Leave space at the bottom of the image for text overlay, with a darker or gradient background in that area for text readability."
-      : " Create a complete scene without considering text overlay, using the full canvas for the illustration.";
-      
     const sceneText = scene.text.trim();
     console.log(`📄 Texto de la escena ${idx + 1}: "${sceneText.substring(0, 50)}..."`);
     
     const prompt = 
       `${styleWords}. Illustration for a story, square composition. ` +
-      `Scene ${idx + 1}: ${sceneText}${refClause}${textLayoutClause}`;
+      `Scene ${idx + 1}: ${sceneText}${refClause}`;
     
     console.log(`🎯 Longitud del prompt ${idx + 1}: ${prompt.length} caracteres`);
     prompts.push(prompt);
@@ -293,7 +288,6 @@ function composePages(scenes: Scene[], imageResults: Array<{ path: string; type:
     image_path: imageResults[index].path,
     image_type: imageResults[index].type,
     text: scene.text,
-    textOverlay: imageOptions.textOverlay || false
   }));
 }
 

@@ -34,7 +34,6 @@ export default function CreatePage() {
     moderation: "auto",
     output_compression: 100,
     output_format: "png",
-    textOverlay: false
   })
 
   const [progress, setProgress] = useState(0)
@@ -334,18 +333,6 @@ export default function CreatePage() {
                                 onValueChange={(value) => setImageOptions({...imageOptions, output_compression: value[0]})}
                                 className="py-4"
                               />
-                            </div>
-
-                            <div className="space-y-2 col-span-2">
-                              <label className="text-sm font-medium">Texto en la imagen</label>
-                              <select
-                                className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
-                                value={imageOptions.textOverlay.toString()}
-                                onChange={(e) => setImageOptions({...imageOptions, textOverlay: e.target.value === "true"})}
-                              >
-                                <option value="false">Texto al lado de la imagen</option>
-                                <option value="true">Texto sobre la imagen</option>
-                              </select>
                             </div>
                           </>
                         )}
