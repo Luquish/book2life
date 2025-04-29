@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-blue-900 text-white">
       {/* Animated stars background */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <Stars count={50} />
       </div>
 
@@ -97,15 +97,15 @@ export default function Home() {
             </div>
 
             {/* Decorative elements */}
-            <div className="absolute -bottom-10 -left-10 z-0 w-40 h-40 bg-gradient-to-br from-pink-500/30 to-purple-500/30 rounded-full blur-3xl"></div>
-            <div className="absolute -top-10 -right-10 z-0 w-40 h-40 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-10 -left-10 z-0 w-40 h-40 bg-gradient-to-br from-pink-500/30 to-purple-500/30 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute -top-10 -right-10 z-0 w-40 h-40 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full blur-3xl pointer-events-none"></div>
           </div>
         </div>
       </main>
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/0 via-indigo-900/50 to-blue-900/0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/0 via-indigo-900/50 to-blue-900/0 pointer-events-none"></div>
 
         <div className="relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">

@@ -11,7 +11,7 @@ import { StyleSelector } from "@/components/style-selector"
 import { useToast } from "@/hooks/use-toast"
 import { Stars } from "@/components/Stars"
 import { Progress } from "@/components/ui/progress"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 
 import { BookOpen, Sparkles, ArrowLeft, Wand2, Loader2, Palette, ImageIcon } from "lucide-react"
 
@@ -20,7 +20,7 @@ export default function CreatePage() {
   const { toast } = useToast()
   const [story, setStory] = useState("")
   const [selectedStyle, setSelectedStyle] = useState("storybook")
-  const [maxImages, setMaxImages] = useState(5)
+  const [maxImages, setMaxImages] = useState(6)
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("write")
   
@@ -33,7 +33,8 @@ export default function CreatePage() {
     background: "auto",
     moderation: "auto",
     output_compression: 100,
-    output_format: "png"
+    output_format: "png",
+    textOverlay: false
   })
 
   const [progress, setProgress] = useState(0)
@@ -334,6 +335,18 @@ export default function CreatePage() {
                                 className="py-4"
                               />
                             </div>
+
+                            <div className="space-y-2 col-span-2">
+                              <label className="text-sm font-medium">Texto en la imagen</label>
+                              <select
+                                className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
+                                value={imageOptions.textOverlay.toString()}
+                                onChange={(e) => setImageOptions({...imageOptions, textOverlay: e.target.value === "true"})}
+                              >
+                                <option value="false">Texto al lado de la imagen</option>
+                                <option value="true">Texto sobre la imagen</option>
+                              </select>
+                            </div>
                           </>
                         )}
                       </div>
@@ -376,19 +389,18 @@ export default function CreatePage() {
       {/* Progress Dialog */}
       <Dialog open={showProgress} onOpenChange={setShowProgress}>
         <DialogContent className="sm:max-w-md bg-indigo-900 border-indigo-700/50">
-          <div className="space-y-6 py-6">
-            <h2 className="text-xl font-semibold text-center text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold text-center text-white">
               Creando tu libro ilustrado
-            </h2>
-            
-            <div className="space-y-4">
-              <Progress value={progress} className="h-2 bg-indigo-950" />
-              
-              <p className="text-sm text-center text-purple-200">
-                {generationStatus}
-              </p>
-            </div>
+            </DialogTitle>
+            <DialogDescription className="text-center text-purple-200">
+              {generationStatus}
+            </DialogDescription>
+          </DialogHeader>
 
+          <div className="space-y-6 py-4">
+            <Progress value={progress} className="h-2 bg-indigo-950" />
+            
             <div className="flex justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
             </div>
