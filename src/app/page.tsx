@@ -1,103 +1,176 @@
-import Image from "next/image";
+"use client"
+
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { MoveRight, Sparkles, BookOpen, Palette, ImageIcon } from "lucide-react"
+import { Stars } from "@/components/Stars"
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-blue-900 text-white">
+      {/* Animated stars background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <Stars count={50} />
+      </div>
+
+      {/* Header */}
+      <header className="container mx-auto pt-6 px-4">
+        <nav className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-yellow-300" />
+            <span className="text-xl font-bold">Book2life</span>
+          </div>
+          <div className="flex gap-4">
+            <Button 
+              variant="ghost" 
+              className="text-white hover:text-yellow-300"
+              onClick={() => router.push('/about')}
+            >
+              About
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="text-white hover:text-yellow-300"
+              onClick={() => router.push('/gallery')}
+            >
+              Gallery
+            </Button>
+            <Button 
+              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+              onClick={() => router.push('/create')}
+            >
+              Create Now
+            </Button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <main className="container mx-auto px-4 pt-20 pb-32">
+        <div className="flex flex-col md:flex-row items-center gap-12">
+          <div className="md:w-1/2 space-y-6">
+            <div className="relative">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                Transform Your Stories Into{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-yellow-300">
+                  Magical Illustrations
+                </span>
+              </h1>
+              <div className="absolute -top-6 -right-6 animate-float">
+                <Sparkles className="h-12 w-12 text-yellow-300" />
+              </div>
+            </div>
+
+            <p className="text-lg text-purple-100">
+              Upload your story and watch as our AI brings your words to life with beautiful, custom illustrations in
+              various artistic styles.
+            </p>
+
+            <div className="pt-4">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 group"
+                onClick={() => router.push('/create')}
+              >
+                Start Creating
+                <MoveRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="md:w-1/2 relative">
+            <div className="relative z-10 rounded-lg overflow-hidden shadow-2xl transform transition-transform hover:scale-105 duration-500">
+              <img
+                src="/The-dragon.png"
+                alt="Book illustration example"
+                className="w-auto h-auto"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/70 to-transparent flex items-end">
+                <div className="p-6">
+                  <p className="text-white font-medium">
+                    "The dragon soared through the starlit sky, its scales shimmering like diamonds..."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Decorative elements */}
+            <div className="absolute -bottom-10 -left-10 z-0 w-40 h-40 bg-gradient-to-br from-pink-500/30 to-purple-500/30 rounded-full blur-3xl"></div>
+            <div className="absolute -top-10 -right-10 z-0 w-40 h-40 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full blur-3xl"></div>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-20 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/0 via-indigo-900/50 to-blue-900/0"></div>
+
+        <div className="relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-yellow-300">
+              How the Magic Works
+            </span>
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-indigo-800/30 backdrop-blur-sm p-8 rounded-xl border border-indigo-700/50 transform transition-transform hover:scale-105 duration-300">
+              <div className="bg-gradient-to-br from-pink-500 to-purple-500 w-14 h-14 rounded-lg flex items-center justify-center mb-6">
+                <BookOpen className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Upload Your Story</h3>
+              <p className="text-purple-100">
+                Share your story with us, whether it's a short tale or a chapter from your book.
+              </p>
+            </div>
+
+            <div className="bg-indigo-800/30 backdrop-blur-sm p-8 rounded-xl border border-indigo-700/50 transform transition-transform hover:scale-105 duration-300">
+              <div className="bg-gradient-to-br from-blue-500 to-cyan-500 w-14 h-14 rounded-lg flex items-center justify-center mb-6">
+                <Palette className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Choose Your Style</h3>
+              <p className="text-purple-100">
+                Select from various artistic styles like storybook, watercolor, manga, pixel art, and more.
+              </p>
+            </div>
+
+            <div className="bg-indigo-800/30 backdrop-blur-sm p-8 rounded-xl border border-indigo-700/50 transform transition-transform hover:scale-105 duration-300">
+              <div className="bg-gradient-to-br from-yellow-500 to-orange-500 w-14 h-14 rounded-lg flex items-center justify-center mb-6">
+                <ImageIcon className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">See It Come to Life</h3>
+              <p className="text-purple-100">
+                Watch as our AI transforms your words into beautiful illustrations that capture the essence of your
+                story.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="container mx-auto px-4 py-8 border-t border-indigo-800/50">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex items-center gap-2 mb-4 md:mb-0">
+            <Sparkles className="h-5 w-5 text-yellow-300" />
+            <span className="font-bold">Book2life</span>
+          </div>
+          <div className="text-sm text-purple-200">© {new Date().getFullYear()} Book2life. All rights reserved.</div>
+        </div>
       </footer>
+
+      {/* Global styles */}
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </div>
-  );
+  )
 }
