@@ -23,7 +23,6 @@ export default function CreatePage() {
   const [maxImages, setMaxImages] = useState(6)
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState("write")
-  const [apiKey, setApiKey] = useState("")
   
   // Nuevos estados para las opciones de imagen
   const [imageOptions, setImageOptions] = useState({
@@ -51,15 +50,6 @@ export default function CreatePage() {
       return
     }
 
-    if (!apiKey.trim() || !apiKey.startsWith('sk-')) {
-      toast({
-        title: "API Key required",
-        description: "Please enter a valid OpenAI API key starting with 'sk-'.",
-        variant: "destructive",
-      })
-      return
-    }
-
     setIsLoading(true)
     setShowProgress(true)
     setProgress(0)
@@ -81,7 +71,6 @@ export default function CreatePage() {
           style: selectedStyle,
           maxImages,
           imageOptions,
-          apiKey: apiKey || undefined,
         }),
       })
 
@@ -229,140 +218,125 @@ export default function CreatePage() {
 
               <TabsContent value="settings" className="mt-0">
                 <div className="space-y-6">
-                  <div>
-                    <h2 className="text-xl font-semibold mb-4">Configuration</h2>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">OpenAI API Key</label>
-                        <input
-                          type="password"
-                          placeholder="sk-..."
-                          className="w-full px-3 py-2 bg-indigo-950/50 border border-indigo-700/50 rounded-md text-white placeholder:text-indigo-300/70"
-                          value={apiKey}
-                          onChange={(e) => setApiKey(e.target.value)}
-                        />
-                        <p className="text-sm text-purple-200 mt-1">
-                          Opcional: Ingresa tu API key de OpenAI si no tienes una configurada en el servidor.
-                        </p>
-                      </div>
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold">Illustration Settings</h2>
+                    <p className="text-purple-200">Customize how many illustrations you want for your story.</p>
 
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Number of Images</label>
-                        <div className="flex items-center gap-4">
-                          <Slider
-                            value={[maxImages]}
-                            onValueChange={(value) => setMaxImages(value[0])}
-                            max={10}
-                            min={1}
-                            step={1}
-                            className="flex-1"
-                          />
-                          <span className="w-12 text-center">{maxImages}</span>
-                        </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Number of Illustrations</span>
+                        <span className="font-semibold">{maxImages}</span>
                       </div>
+                      <Slider
+                        value={[maxImages]}
+                        min={1}
+                        max={10}
+                        step={1}
+                        onValueChange={(value: number[]) => setMaxImages(value[0])}
+                        className="py-4"
+                      />
                     </div>
-                  </div>
 
-                  <div className="space-y-4 pt-6">
-                    <h3 className="text-lg font-semibold">Image Generation Options</h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Model</label>
-                        <select
-                          className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
-                          value={imageOptions.model}
-                          onChange={(e) => setImageOptions({...imageOptions, model: e.target.value})}
-                        >
-                          <option value="dall-e-2">DALL-E 2</option>
-                          <option value="dall-e-3">DALL-E 3</option>
-                          <option value="gpt-image-1">GPT-4V</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Size</label>
-                        <select
-                          className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
-                          value={imageOptions.size}
-                          onChange={(e) => setImageOptions({...imageOptions, size: e.target.value})}
-                        >
-                          <option value="1024x1024">1024x1024 (Square)</option>
-                          <option value="1536x1024">1536x1024 (Landscape)</option>
-                          <option value="1024x1536">1024x1536 (Portrait)</option>
-                        </select>
-                      </div>
-
-                      {imageOptions.model === 'dall-e-3' && (
+                    <div className="space-y-4 pt-6">
+                      <h3 className="text-lg font-semibold">Image Generation Options</h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium">Style</label>
+                          <label className="text-sm font-medium">Model</label>
                           <select
                             className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
-                            value={imageOptions.style}
-                            onChange={(e) => setImageOptions({...imageOptions, style: e.target.value})}
+                            value={imageOptions.model}
+                            onChange={(e) => setImageOptions({...imageOptions, model: e.target.value})}
                           >
-                            <option value="vivid">Vivid</option>
-                            <option value="natural">Natural</option>
+                            <option value="dall-e-2">DALL-E 2</option>
+                            <option value="dall-e-3">DALL-E 3</option>
+                            <option value="gpt-image-1">GPT-4V</option>
                           </select>
                         </div>
-                      )}
 
-                      {imageOptions.model === 'gpt-image-1' && (
-                        <>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Size</label>
+                          <select
+                            className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
+                            value={imageOptions.size}
+                            onChange={(e) => setImageOptions({...imageOptions, size: e.target.value})}
+                          >
+                            <option value="1024x1024">1024x1024 (Square)</option>
+                            <option value="1536x1024">1536x1024 (Landscape)</option>
+                            <option value="1024x1536">1024x1536 (Portrait)</option>
+                          </select>
+                        </div>
+
+                        {imageOptions.model === 'dall-e-3' && (
                           <div className="space-y-2">
-                            <label className="text-sm font-medium">Background</label>
+                            <label className="text-sm font-medium">Style</label>
                             <select
                               className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
-                              value={imageOptions.background}
-                              onChange={(e) => setImageOptions({...imageOptions, background: e.target.value})}
+                              value={imageOptions.style}
+                              onChange={(e) => setImageOptions({...imageOptions, style: e.target.value})}
                             >
-                              <option value="auto">Auto</option>
-                              <option value="transparent">Transparent</option>
-                              <option value="opaque">Opaque</option>
+                              <option value="vivid">Vivid</option>
+                              <option value="natural">Natural</option>
                             </select>
                           </div>
+                        )}
 
-                          <div className="space-y-2">
-                            <label className="text-sm font-medium">Output Format</label>
-                            <select
-                              className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
-                              value={imageOptions.output_format}
-                              onChange={(e) => setImageOptions({...imageOptions, output_format: e.target.value})}
-                            >
-                              <option value="png">PNG</option>
-                              <option value="jpeg">JPEG</option>
-                              <option value="webp">WebP</option>
-                            </select>
-                          </div>
+                        {imageOptions.model === 'gpt-image-1' && (
+                          <>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Background</label>
+                              <select
+                                className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
+                                value={imageOptions.background}
+                                onChange={(e) => setImageOptions({...imageOptions, background: e.target.value})}
+                              >
+                                <option value="auto">Auto</option>
+                                <option value="transparent">Transparent</option>
+                                <option value="opaque">Opaque</option>
+                              </select>
+                            </div>
 
-                          <div className="space-y-2">
-                            <label className="text-sm font-medium">Quality</label>
-                            <select
-                              className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
-                              value={imageOptions.quality}
-                              onChange={(e) => setImageOptions({...imageOptions, quality: e.target.value})}
-                            >
-                              <option value="auto">Auto</option>
-                              <option value="high">High</option>
-                              <option value="medium">Medium</option>
-                              <option value="low">Low</option>
-                            </select>
-                          </div>
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Output Format</label>
+                              <select
+                                className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
+                                value={imageOptions.output_format}
+                                onChange={(e) => setImageOptions({...imageOptions, output_format: e.target.value})}
+                              >
+                                <option value="png">PNG</option>
+                                <option value="jpeg">JPEG</option>
+                                <option value="webp">WebP</option>
+                              </select>
+                            </div>
 
-                          <div className="space-y-2">
-                            <label className="text-sm font-medium">Compression ({imageOptions.output_compression}%)</label>
-                            <Slider
-                              value={[imageOptions.output_compression]}
-                              min={0}
-                              max={100}
-                              step={1}
-                              onValueChange={(value) => setImageOptions({...imageOptions, output_compression: value[0]})}
-                              className="py-4"
-                            />
-                          </div>
-                        </>
-                      )}
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Quality</label>
+                              <select
+                                className="w-full bg-indigo-950/50 border-indigo-700/50 rounded-md"
+                                value={imageOptions.quality}
+                                onChange={(e) => setImageOptions({...imageOptions, quality: e.target.value})}
+                              >
+                                <option value="auto">Auto</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                              </select>
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Compression ({imageOptions.output_compression}%)</label>
+                              <Slider
+                                value={[imageOptions.output_compression]}
+                                min={0}
+                                max={100}
+                                step={1}
+                                onValueChange={(value) => setImageOptions({...imageOptions, output_compression: value[0]})}
+                                className="py-4"
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
 

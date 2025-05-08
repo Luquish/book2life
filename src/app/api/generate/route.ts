@@ -8,6 +8,16 @@ import dotenv from 'dotenv';
 // Cargar variables desde .env si existe
 dotenv.config();
 
+// Verificar API key
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+if (!OPENAI_API_KEY) {
+  throw new Error("Definí OPENAI_API_KEY (variable o .env)");
+}
+
+const client = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+});
+
 // Configuración global
 const OUTPUT_DIR = path.resolve("public", "output");
 const MODEL_TEXT = "gpt-4.1-mini";
@@ -35,7 +45,7 @@ interface BookPage {
 }
 
 // Paso 1 - Segmentar historia
-async function segmentStory(story: string, maxImages: number, openaiClient: OpenAI): Promise<Scene[]> {
+async function segmentStory(story: string, maxImages: number): Promise<Scene[]> {
   const startTime = Date.now();
   console.log('🔍 Iniciando segmentación de la historia...')
   console.log(`📝 Longitud de la historia: ${story.length} caracteres`)
@@ -75,7 +85,7 @@ Reply with a JSON array in this format:
 }`;
 
   console.log('⏳ Enviando solicitud a OpenAI para segmentación...');
-  const response = await openaiClient.chat.completions.create({
+  const response = await client.chat.completions.create({
     model: MODEL_TEXT,
     messages: [
       { role: "system", content: systemInstructions },
@@ -178,7 +188,7 @@ function buildPrompts(scenes: Scene[], styleKey: string, imageOptions: any = {})
 }
 
 // Paso 3 - Generar imágenes
-async function genImage(prompt: string, imageOptions: any = {}, openaiClient: OpenAI): Promise<{ path: string; type: 'url' | 'base64' }> {
+async function genImage(prompt: string, imageOptions: any = {}): Promise<{ path: string; type: 'url' | 'base64' }> {
   console.log('🎨 Generando imagen...')
   console.log('📝 Longitud del prompt:', prompt.length, 'caracteres')
   console.log('Opciones:', JSON.stringify(imageOptions, null, 2))
@@ -207,7 +217,7 @@ async function genImage(prompt: string, imageOptions: any = {}, openaiClient: Op
   console.log('Configuración final de la API:', JSON.stringify(options, null, 2))
 
   try {
-    const result = await openaiClient.images.generate(options);
+    const result = await client.images.generate(options);
     console.log('✅ Imagen generada exitosamente')
     
     // La respuesta podría proporcionar URL o b64_json
@@ -257,14 +267,14 @@ async function genImage(prompt: string, imageOptions: any = {}, openaiClient: Op
   }
 }
 
-async function generateImages(prompts: string[], imageOptions: any = {}, openaiClient: OpenAI): Promise<Array<{ path: string; type: 'url' | 'base64' }>> {
+async function generateImages(prompts: string[], imageOptions: any = {}): Promise<Array<{ path: string; type: 'url' | 'base64' }>> {
   console.log(`🖼️ Iniciando generación de ${prompts.length} imágenes...`)
   const imagePaths: Array<{ path: string; type: 'url' | 'base64' }> = [];
   
   // Generar imágenes secuencialmente
   for (let i = 0; i < prompts.length; i++) {
     console.log(`\n📸 Generando imagen ${i + 1} de ${prompts.length}`)
-    const result = await genImage(prompts[i], imageOptions, openaiClient);
+    const result = await genImage(prompts[i], imageOptions);
     imagePaths.push(result);
   }
   
@@ -282,7 +292,7 @@ function composePages(scenes: Scene[], imageResults: Array<{ path: string; type:
 }
 
 // Pipeline principal
-async function illustrateStory(story: string, styleKey: string, maxImages: number, imageOptions: any = {}, openaiClient: OpenAI): Promise<BookPage[]> {
+async function illustrateStory(story: string, styleKey: string, maxImages: number, imageOptions: any = {}): Promise<BookPage[]> {
   console.log('\n🚀 Iniciando proceso de ilustración...')
   console.log(`Estilo seleccionado: ${styleKey}`)
   console.log('Opciones de imagen:', JSON.stringify(imageOptions, null, 2))
@@ -290,9 +300,9 @@ async function illustrateStory(story: string, styleKey: string, maxImages: numbe
   // Crear directorio de salida si no existe
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
   
-  const scenes = await segmentStory(story, maxImages, openaiClient);
+  const scenes = await segmentStory(story, maxImages);
   const prompts = buildPrompts(scenes, styleKey, imageOptions);
-  const imageResults = await generateImages(prompts, imageOptions, openaiClient);
+  const imageResults = await generateImages(prompts, imageOptions);
   const pages = composePages(scenes, imageResults, imageOptions);
   
   console.log('✅ Proceso de ilustración completado')
@@ -320,20 +330,8 @@ export async function POST(request: NextRequest) {
         moderation: 'auto',
         output_compression: 100,
         output_format: 'png'
-      },
-      apiKey // API key del usuario
+      }
     } = body;
-
-    // Usar la API key del usuario si está disponible, si no usar la del .env
-    const OPENAI_API_KEY = apiKey || process.env.OPENAI_API_KEY;
-    if (!OPENAI_API_KEY) {
-      return NextResponse.json({ error: 'Se requiere una API key de OpenAI' }, { status: 400 });
-    }
-
-    // Crear el cliente de OpenAI con la API key correspondiente
-    const client = new OpenAI({
-      apiKey: OPENAI_API_KEY,
-    });
     
     if (!story) {
       console.error('❌ Error: No se proporcionó texto de historia')
@@ -348,7 +346,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Generar el libro ilustrado
-    const pages = await illustrateStory(story, style, maxImages, imageOptions, client);
+    const pages = await illustrateStory(story, style, maxImages, imageOptions);
     
     console.log('✨ Respuesta enviada exitosamente')
     return NextResponse.json({ 
