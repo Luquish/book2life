@@ -1,27 +1,24 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
+import './globals.css'
+import { Inter } from 'next/font/google'
+import Header from '@/components/Header'
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: "Book2Life",
-  description: "Transform your books into interactive experiences",
+export const metadata = {
+  title: 'Book2Life',
+  description: 'Transform your stories into magical illustrations',
 }
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+    <html lang="es">
+      <body className={inter.className}>
+        <Header />
+        {children}
       </body>
     </html>
   )
